@@ -10,4 +10,76 @@ VulnerableCode Home
        {% include "package_search_box.html" %}
        {% include "vulnerability_search_box.html" %}
     </section>
+    <section class="section pt-0">
+        <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+            <thead>
+                <tr>
+                    <th>Importer Name</th>
+                    <th>Last Run</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for status in importer_statuses %}
+                <tr>
+                    <td>{{ status.importer_name }}</td>
+                    <td>{{ status.last_run }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="section pt-0">
+        <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+            <thead>
+                <tr>
+                    <th>Improver Name</th>
+                    <th>Last Run</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for status in improver_statuses %}
+                <tr>
+                    <td>{{ status.improver_name }}</td>
+                    <td>{{ status.last_run }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+     <section class="section pt-0">
+        <table class="table is-fullwidth is-striped is-hoverable">
+            <thead>
+                <tr>
+                    <th>Action Time</th>
+                    <th>Actor Name</th>
+                    <th>Action Type</th>
+                    <th>Vulnerability</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in vulnerability_change_logs %}
+                <tr>
+                    <td>{{ log.action_time }}</td>
+                    <td>{{ log.actor_name }}</td>
+                    <td>
+                        {% if log.action_type == 1 %}
+                            Import
+                        {% elif log.action_type == 2 %}
+                            Improve
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'vulnerability_details' log.vulnerability.vulnerability_id %}">
+                            {{ log.vulnerability.vulnerability_id }}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
 {% endblock %}

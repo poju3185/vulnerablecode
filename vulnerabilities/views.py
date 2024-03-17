@@ -31,6 +31,9 @@ from vulnerabilities.models import VulnerabilityStatusType
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
+from vulnerabilities.models import ImporterStatus
+from vulnerabilities.models import ImproverStatus
+from vulnerabilities.models import VulnerabilityChangeLog
 
 PAGE_SIZE = 20
 
@@ -171,10 +174,32 @@ class HomePage(View):
 
     def get(self, request):
         request_query = request.GET
+        importer_statuses = [
+            {
+                # Needs to process importer_name here instead of in the template.
+                "importer_name": status.importer_name.split(".")[-1],
+                "last_run": status.last_run,
+            }
+            for status in ImporterStatus.objects.all()
+        ]
+
+        improver_statuses = [
+            {
+                "improver_name": status.improver_name.split(".")[-1],
+                "last_run": status.last_run,
+            }
+            for status in ImproverStatus.objects.all()
+        ]
         context = {
             "vulnerability_search_form": VulnerabilitySearchForm(request_query),
             "package_search_form": PackageSearchForm(request_query),
+            "importer_statuses": importer_statuses,
+            "improver_statuses": improver_statuses,
+            "vulnerability_change_logs": VulnerabilityChangeLog.objects.order_by("-action_time")[
+                :25
+            ],
         }
+
         return render(request=request, template_name=self.template_name, context=context)
 
 

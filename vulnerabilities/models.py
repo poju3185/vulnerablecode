@@ -1310,3 +1310,13 @@ class PackageChangeLog(ChangeLog):
             source_url=source_url,
             related_vulnerability=related_vulnerability,
         )
+
+
+class ImporterStatus(models.Model):
+    importer_name = models.CharField(max_length=255, unique=True)
+    last_run = models.DateTimeField(null=True, blank=True)
+
+
+class ImproverStatus(models.Model):
+    improver_name = models.CharField(max_length=255, unique=True)
+    last_run = models.DateTimeField(null=True, blank=True)

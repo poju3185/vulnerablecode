@@ -13,6 +13,8 @@ from django.core.management.base import CommandError
 
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importers import IMPORTERS_REGISTRY
+from vulnerabilities.models import ImporterStatus
+from django.utils.timezone import now
 
 
 class Command(BaseCommand):
@@ -63,6 +65,10 @@ class Command(BaseCommand):
                     self.style.SUCCESS(
                         f"Successfully imported data using {importer.qualified_name}"
                     )
+                )
+                ImporterStatus.objects.update_or_create(
+                    importer_name=importer.qualified_name,
+                    defaults={'last_run': now()}
                 )
             except Exception:
                 failed_importers.append(importer.qualified_name)

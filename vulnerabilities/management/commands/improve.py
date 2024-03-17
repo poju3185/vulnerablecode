@@ -14,6 +14,8 @@ from django.core.management.base import CommandError
 
 from vulnerabilities.improve_runner import ImproveRunner
 from vulnerabilities.improvers import IMPROVERS_REGISTRY
+from vulnerabilities.models import ImproverStatus
+from django.utils.timezone import now
 
 
 class Command(BaseCommand):
@@ -63,6 +65,10 @@ class Command(BaseCommand):
                         f"Successfully improved data using {improver.qualified_name}"
                     )
                 )
+                ImproverStatus.objects.update_or_create(
+                    improver_name=improver.qualified_name, defaults={"last_run": now()}
+                )
+
             except Exception:
                 failed_improvers.append(improver.qualified_name)
                 traceback.print_exc()

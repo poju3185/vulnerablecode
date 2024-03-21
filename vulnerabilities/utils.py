@@ -579,7 +579,8 @@ def purl_to_dict(purl: PackageURL, with_empty: bool = True):
     mapping = purl.to_dict(encode=True, empty="")
 
     if not with_empty:
-        return without_empty_values(mapping)
+        # return without_empty_values(mapping)
+        return {}
 
     return mapping
 
